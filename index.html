@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>বাংলা Photo Card & Meme Generator</title>
+
+<!-- Google Bangla Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Baloo+Da+2:wght@400;700&family=Atma:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: Hind Siliguri, Arial;
+  background: #f2f2f2;
+  text-align: center;
+  padding: 10px;
+}
+.section {
+  background: #fff;
+  padding: 12px;
+  margin: 10px auto;
+  max-width: 420px;
+  border-radius: 8px;
+}
+input, select, button {
+  padding: 8px;
+  margin: 4px;
+  width: 90%;
+  max-width: 300px;
+}
+button {
+  background: #111;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background: #333;
+}
+canvas {
+  margin-top: 10px;
+  border: 2px solid #000;
+  max-width: 100%;
+}
+</style>
+</head>
+<body>
+
+<h2>🎉 বাংলা Photo Card + Meme Generator</h2>
+
+<div class="section">
+
+  <input type="file" id="imageUpload">
+
+  <input type="text" id="photoText" placeholder="বাংলা লেখা লিখুন">
+
+  <input type="text" id="topText" placeholder="Meme top text">
+
+  <input type="text" id="bottomText" placeholder="Meme bottom text">
+
+  <select id="fontSelect">
+    <option value="Hind Siliguri">Hind Siliguri</option>
+    <option value="Noto Serif Bengali">Noto Serif Bengali</option>
+    <option value="Baloo Da 2">Baloo Da 2</option>
+    <option value="Atma">Atma</option>
+  </select>
+
+  <button onclick="generate()">Generate</button>
+  <button onclick="download()">Download</button>
+
+  <canvas id="canvas" width="400" height="400"></canvas>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let img = new Image();
+
+imageUpload.addEventListener("change", e => {
+  const reader = new FileReader();
+  reader.onload = () => img.src = reader.result;
+  reader.readAsDataURL(e.target.files[0]);
+});
+
+function generate() {
+  if (!img.src) {
+    alert("ছবি আপলোড করুন");
+    return;
+  }
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+  const font = fontSelect.value;
+  ctx.textAlign = "center";
+
+  // Meme top
+  if (topText.value) {
+    ctx.font = "bold 28px Impact";
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+    ctx.strokeText(topText.value.toUpperCase(),200,40);
+    ctx.fillText(topText.value.toUpperCase(),200,40);
+  }
+
+  // Meme bottom
+  if (bottomText.value) {
+    ctx.strokeText(bottomText.value.toUpperCase(),200,380);
+    ctx.fillText(bottomText.value.toUpperCase(),200,380);
+  }
+
+  // Bangla photo text
+  if (photoText.value) {
+    ctx.font = `26px "${font}"`;
+    ctx.fillStyle = "#ffeb3b";
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+    ctx.strokeText(photoText.value,200,340);
+    ctx.fillText(photoText.value,200,340);
+  }
+}
+
+function download() {
+  const a = document.createElement("a");
+  a.href = canvas.toDataURL("image/png");
+  a.download = "bangla-fun-image.png";
+  a.click();
+}
+</script>
+
+</body>
+</html>
